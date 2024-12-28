@@ -85,7 +85,8 @@ export const TransactionTable = pgTable('transactions', {
   userID: integer('user_id').references(() => UserTable.id).notNull(),
   // type of transaction: whether the transaction is ended or it's a redeemed transaction
   type: varchar('type', {length: 20}).notNull(),
-
-
+  amount: integer('amount').notNull(),
+  description: text('description').notNull(),
+  date: timestamp('date').defaultNow().notNull(),
 
 })
