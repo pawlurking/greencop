@@ -17,7 +17,8 @@ const clientId = process.env.WEB3_AUTH_CLIENT_ID;
 
 const chainConfig = {
   chainNamespace:CHAIN_NAMESPACES.EIP155,
-  chainId:'Oxaa36a7',
+  // chainId:'Oxaa36a7',
+  chainId: '0xaa36a7', 
   rpcTarget: 'https://rpc.ankr.com/eth_sepolia',
   displayName: 'Sepolia Testnet',
   blockExplorerUrl: 'https://sepolia.etherscan.io',
@@ -50,7 +51,8 @@ export default function Header ({onMenuClick, totalEarnings}: HeaderProps) {
   const [userInfo, setUserInfo] = useState<any>(null);
   const pathname = usePathname();
   const [notification, setNotification] = useState<Notification []>([]);
-  const [balance, setBalance] = useState(0);
+  // const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState<number>(0);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   useEffect (() => {
@@ -114,7 +116,7 @@ export default function Header ({onMenuClick, totalEarnings}: HeaderProps) {
         const user = await getUserByEmail(userInfo.email);
 
         if (user) {
-          const userBalance = getUserBalance(user.id);
+          const userBalance = await getUserBalance(user.id);
           setBalance(userBalance);
         }
 
