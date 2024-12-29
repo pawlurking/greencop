@@ -22,7 +22,8 @@ export const ReportTable = pgTable("reports", {
   // wasteType will be categorized by AI
   wasteType: varchar('waste_type', {length: 255}).notNull(),
   // the amount of waste will be estimated by AI
-  amount: integer('amount').notNull(),
+  // amount: integer('amount').notNull(),
+  amount: varchar("amount", { length: 255 }).notNull(),
   // the captured image that user reported in!
   imageURL: text('image_url'),
   // the AI api returns a json object. This json object includes garbage type (str), estimation confidence level (numerical percentage), etc.
