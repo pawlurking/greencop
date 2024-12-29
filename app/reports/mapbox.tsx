@@ -36,7 +36,7 @@ export default function ReportPage() {
           {/* This container will host the Mapbox Geocoder search box */}
           <div
             id="geocoder-container"
-            className="w-full"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
           ></div>
 
           {/* Initialize the Geocoder */}
