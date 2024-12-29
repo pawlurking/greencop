@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import {Menu, LeafyGreen, Coins, Search, Bell, User, ChevronDown, LogIn, LogOut} from 'lucide-react';
+import {Menu, LeafyGreen, Coins, Search, Bell, User, ChevronDown, LogIn, LogOut, PawPrint} from 'lucide-react';
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from './ui/dropdown-menu';
 import {Badge} from './ui/badge';
 import {Web3Auth} from '@web3auth/modal';
@@ -12,6 +12,8 @@ import { CHAIN_NAMESPACES, IProvider, WEB3AUTH_NETWORK } from '@web3auth/base';
 import {EthereumPrivateKeyProvider} from '@web3auth/ethereum-provider';
 import { createUser, getUnreadNotifications, getUserBalance, getUserByEmail, markNotificationAsRead } from '@/utils/database/actions';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import MySvgIcon from '../app/logoicon';
+
 
 const clientId = process.env.WEB3_AUTH_CLIENT_ID;
 
@@ -226,7 +228,7 @@ export default function Header ({onMenuClick, totalEarnings}: HeaderProps) {
               <Menu className="h-6 w-6 text-gray-800"/>
           </Button>
           <Link href='/' className="flex items-center">
-            <LeafyGreen className="h-6 w-6 md:h-8 md:w-8 text-green-500 mr-1 md:mr-2"/>
+            <PawPrint className="h-6 w-6 md:h-8 md:w-8 text-green-500 mr-1 md:mr-2"/>
             <span className="text-base md:text-xl font-bold text-gray-800">GreenCop</span>
           </Link>
         </div>

@@ -1,6 +1,7 @@
-import {ArrowRight, LeafyGreen, Recycle, Users, Coins, MapPin, ChevronRight} from 'lucide-react';
+import {ArrowRight, LeafyGreen, Recycle, Users, Coins, MapPin, ChevronRight, PawPrint} from 'lucide-react';
 import Link from 'next/link';
 import {Button} from "@/components/ui/button";
+import MySvgIcon from './logoicon'; 
 
 function AnimatedGlobe() {
   return (
@@ -9,7 +10,7 @@ function AnimatedGlobe() {
       <div className="absolute inset-2 rounded-full bg-green-400 opacity-40 animate-ping"></div>
       <div className="absolute inset-4 rounded-full bg-green-300 opacity-60 animate-spin"></div>
       <div className="absolute inset-6 rounded-full bg-green-200 opacity-80 animate-bounce"></div>
-      <LeafyGreen className="absolute inset-0 m-auto h-16 w-16 text-green-600 animate-pulse" />
+      <PawPrint className="absolute inset-0 m-auto h-16 w-16 text-green-600 animate-pulse" />
     </div>
   )
 };
