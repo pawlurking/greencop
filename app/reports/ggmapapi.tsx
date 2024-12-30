@@ -46,7 +46,8 @@ export default function ReportPage() {
 
 
   return (
-    <StandaloneSearchBox
+    <div>
+      {isLoaded ?(<StandaloneSearchBox
       onLoad={onLoad}
       onPlacesChanged={onPlacesChanged}
     >
@@ -60,7 +61,19 @@ export default function ReportPage() {
         className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
         placeholder="Enter waste location"
       />
-    </StandaloneSearchBox>
+    </StandaloneSearchBox>):(
+      <input
+        type="text"
+        id="location"
+        name="location"
+        value={newReport.location}
+        onChange={handleInputChange}
+        required
+        className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
+        placeholder="Enter waste location"
+      />
+    )}
+    </div>
   )
 
 

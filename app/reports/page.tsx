@@ -53,8 +53,6 @@ export default function ReportPage() {
 
   // those using google map apis
 
-  // const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
-
   // const {isLoaded} = useJsApiLoader({
   //   id: 'google-map-script',
   //   googleMapsApiKey: GoogleMapsAPIKey,
@@ -64,6 +62,8 @@ export default function ReportPage() {
   // const onLoad = useCallback((ref: google.maps.places.SearchBox) => {
   //   setSearchBox(ref);
   // }, []);
+
+  // const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
 
   // const onPlacesChanged = () => {
   //   if (searchBox) {
@@ -82,19 +82,19 @@ export default function ReportPage() {
   // using mapbox to achieve the same function as google apis
   const [isLoaded, setIsLoaded] = useState(false);
   
-    const handleGeocoderResult = (result: any) => {
-      if (result && result.place_name) {
-        setNewReport((prev) => ({
-          ...prev,
-          location: result.place_name,
-        }));
-      }
-    };
-  
-    React.useEffect(() => {
-      // Simulate loading behavior for parity with Google Maps example
-      setIsLoaded(true);
-    }, []);
+  const handleGeocoderResult = useCallback((result: any) => {
+    if (result && result.place_name) {
+      setNewReport((prev) => ({
+        ...prev,
+        location: result.place_name,
+      }));
+    }
+  }, []);
+
+  React.useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
 
 
 
@@ -216,6 +216,7 @@ export default function ReportPage() {
       return;
     }
 
+
     setIsSubmitting(true);
 
     try {
@@ -246,6 +247,11 @@ export default function ReportPage() {
       setPreview(null);
       setVerificationStatus('idle');
       setVerificationResult(null);
+
+      const inputEl = document.querySelector('#geocoder-container input') as HTMLInputElement;
+      if (inputEl) {
+        inputEl.value = ''; // Clear the visible Geocoder input
+      }
 
       toast.success(`Report submitted successfully! You've earned points for reporting waste.`);
 
@@ -353,14 +359,16 @@ export default function ReportPage() {
           <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
           {isLoaded ? (
         <div className="relative">
-          {/* This container will host the Mapbox Geocoder search box */}
-          <div id="geocoder-container" className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"></div>
-
-          {/* Initialize the Geocoder */}
+          <div
+            id="geocoder-container"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
+          ></div>
           <MapboxGeocoderComponent
             accessToken={mapboxToken}
             onResult={handleGeocoderResult}
           />
+          
+
         </div>
       ) : (
         <input
@@ -502,8 +510,14 @@ function MapboxGeocoderComponent({
       geocoder.addTo(container);
     }
 
+    // geocoder.on('result', (e) => {
+    //   onResult(e.result);
+    // });
+
     geocoder.on('result', (e) => {
-      onResult(e.result);
+      if (e.result) {
+        onResult(e.result);
+      }
     });
 
     return () => {
