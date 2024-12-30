@@ -6,8 +6,8 @@ import {MapPin, Trash, Coins, Medal, Settings, Home} from 'lucide-react';
 const sidebarItems = [
   {href: '/', icon: Home, label: 'Home'},
   {href: '/reports', icon: MapPin, label: 'Report Garbage'},
-  {href: '/collect', icon: Trash, label: 'Collect Garbage'},
-  {href: '/rewards', icon: Coins, label: 'Rewards'},
+  {href: '/pickup', icon: Trash, label: 'Pickup Garbage'},
+  {href: '/karmas', icon: Coins, label: 'Karma Board'},
   {href: '/leader', icon: Medal, label: 'Leaderboard'},
 ];
 

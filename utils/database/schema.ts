@@ -37,6 +37,7 @@ export const ReportTable = pgTable("reports", {
 
 })
 
+
 // define schema for reward table 
 export const RewardTable = pgTable('rewards', {
   id: serial('id').primaryKey(),
