@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Override styles for Mapbox Geocoder */
+#geocoder-container .mapboxgl-ctrl-geocoder {
+  font-size: 17px;
+  width: 100% !important;
+  background-color: #f3f4f6; /* Equivalent to bg-gray-100 */
+  border: 1px solid #d1d5db; /* Equivalent to border-gray-300 */
+  border-radius: 0.75rem; /* Equivalent to rounded-xl */
+  transition: all 0.3s ease-in-out; /* Equivalent to transition-all duration-300 */
+  padding: 2px; /* Equivalent to px-4 py-2 */
+}
+
+#geocoder-container .mapboxgl-ctrl-geocoder--input:focus {
+  color: #404040; /* fallback */
+  color: #10b981;
+  border-radius: 0.75rem;
+  outline: 0;
+  box-shadow: none;
+  outline: solid;
+}
+
+
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }

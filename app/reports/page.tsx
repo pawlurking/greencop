@@ -358,17 +358,13 @@ export default function ReportPage() {
         <div>
           <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
           {isLoaded ? (
-        <div className="relative">
           <div
             id="geocoder-container"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
-          ></div>
-          <MapboxGeocoderComponent
+          >
+            <MapboxGeocoderComponent
             accessToken={mapboxToken}
             onResult={handleGeocoderResult}
           />
-          
-
         </div>
       ) : (
         <input
