@@ -177,6 +177,8 @@ export default function ReportPage() {
 
         const text = result.response.text().replace('```json', '').replace('```', '');
 
+        console.log('Here is the response', text)
+
         try {
           const parsedResult = JSON.parse(text);
           if (parsedResult.wasteType && parsedResult.quantity && parsedResult.confidence) {

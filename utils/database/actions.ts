@@ -323,3 +323,91 @@ export async function saveCollectedWaste(reportId: number, collectorId: number, 
   }
 }
 
+export async function getOrCreateReward(userId: number) {
+  try {
+    let [reward] = await db.select().from(RewardTable).where(eq(RewardTable.userID, userId)).execute();
+    if (!reward) {
+      [reward] = await db.insert(RewardTable).values({
+        userID:userId,
+        rewardName: 'Default Reward',
+        rewardClaimInfo: 'Default Collection Info',
+        karmaScore: 0,
+        isAvailable: true,
+      }).returning().execute();
+    }
+    return reward;
+  } catch (error) {
+    console.error("Error getting or creating reward:", error);
+    return null;
+  }
+}
+
+export async function getAllRewards() {
+  try {
+    const rewards = await db
+      .select({
+        id: RewardTable.id,
+        userId: RewardTable.userID,
+        points: RewardTable.karmaScore,
+        createdAt: RewardTable.createdAt,
+        userName: UserTable.name,
+      })
+      .from(RewardTable)
+      .leftJoin(UserTable, eq(RewardTable.userID, UserTable.id))
+      .orderBy(desc(RewardTable.karmaScore))
+      .execute();
+
+    return rewards;
+  } catch (error) {
+    console.error("Error fetching all rewards:", error);
+    return [];
+  }
+}
+
+export async function redeemReward(userId: number, rewardId: number) {
+  try {
+    const userReward = await getOrCreateReward(userId) as any;
+    
+    if (rewardId === 0) {
+      // Redeem all points
+      const [updatedReward] = await db.update(RewardTable)
+        .set({ 
+          karmaScore: 0,
+          updatedAt: new Date(),
+        })
+        .where(eq(RewardTable.userID, userId))
+        .returning()
+        .execute();
+
+      // Create a transaction for this redemption
+      await createTransaction(userId, 'redeemed', userReward.karmaScore, `Redeemed all points: ${userReward.karmaScore}`);
+
+      return updatedReward;
+    } else {
+      // Existing logic for redeeming specific rewards
+      const availableReward = await db.select().from(RewardTable).where(eq(RewardTable.id, rewardId)).execute();
+
+      if (!userReward || !availableReward[0] || userReward.points < availableReward[0].karmaScore) {
+        throw new Error("Insufficient points or invalid reward");
+      }
+
+      const [updatedReward] = await db.update(RewardTable)
+        .set({ 
+          karmaScore: sql`${RewardTable.karmaScore} - ${availableReward[0].karmaScore}`,
+          updatedAt: new Date(),
+        })
+        .where(eq(RewardTable.userID, userId))
+        .returning()
+        .execute();
+
+      // Create a transaction for this redemption
+      await createTransaction(userId, 'redeemed', availableReward[0].karmaScore, `Redeemed: ${availableReward[0].rewardName}`);
+
+      return updatedReward;
+    }
+  } catch (error) {
+    console.error("Error redeeming reward:", error);
+    throw error;
+  }
+}
+

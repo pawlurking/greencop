@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Trash2, MapPin, CheckCircle, Clock, ArrowRight, Camera, Upload, Loader, Calendar, Weight, Search } from 'lucide-react'
+import { Trash2, MapPin, CheckCircle, Clock, ArrowRight, Camera, Upload, Loader, Calendar, Weight, Search, X} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'react-hot-toast'
@@ -9,7 +9,8 @@ import { getWasteCollectionTasks, updateTaskStatus, saveReward, saveCollectedWas
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
 // Make sure to set your Gemini API key in your environment variables
-const geminiApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const geminiApiKey = process.env.GOOGLE_MAPS_API_KEY as any;
+
 
 type CollectionTask = {
   id: number
@@ -120,7 +121,7 @@ export default function CollectPage() {
     setVerificationStatus('verifying')
     
     try {
-      const genAI = new GoogleGenerativeAI(geminiApiKey!)
+      const genAI = new GoogleGenerativeAI(geminiApiKey)
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
 
       const base64Data = readFileAsBase64(verificationImage)
@@ -135,8 +136,8 @@ export default function CollectPage() {
       ]
 
       const prompt = `You are an expert in waste management and recycling. Analyze this image and provide:
-        1. Confirm if the waste type matches: ${selectedTask.wasteType}
-        2. Estimate if the quantity matches: ${selectedTask.amount}
+        1. Confirm if the waste type closely matches: ${selectedTask.wasteType}
+        2. Estimate if the quantity closely matches: ${selectedTask.amount}
         3. Your confidence level in this assessment (as a percentage)
         
         Respond in JSON format like this:
@@ -147,8 +148,9 @@ export default function CollectPage() {
         }`
 
       const result = await model.generateContent([prompt, ...imageParts])
-      const response = await result.response
-      const text = response.text()
+      const res = await result.response
+      const text = res.text()
+      // const text = res.text().replace('```json', '').replace('```', '');
       
       try {
         const parsedResult = JSON.parse(text)
@@ -202,10 +204,32 @@ export default function CollectPage() {
     currentPage * ITEMS_PER_PAGE
   )
 
+  const [popupVisible, setPopupVisible] = useState(true);
+
   return (
+    
+
     <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-semibold mb-6 text-gray-800">Waste Collection Tasks</h1>
+      {/* Popup */}
+      {popupVisible && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+           <div className="bg-red-700 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
+          <button
+            onClick={() => setPopupVisible(false)}
+            className="absolute top-2 right-2 text-white hover:text-gray-700"
+            aria-label="Close"
+          >
+            <X className="h-6 w-6" />
+          </button>
+            <p className="text-white bg-red-700 mb-4 text-lg font-sans text-left">
+              This feature will be soon discarded due to limitations of free open-sourced vision model. Instead, me and my teammates are working on developing a <strong>new feature</strong> to incentivize garbage reporters on classifying the reported garbage into pre-defined categories!
+            </p>
+          </div>
+        </div>
+      )}
+      <h1 className="text-3xl font-semibold mb-6 text-gray-800">Garbage Pickup Tasklist</h1>
       
+
       <div className="mb-4 flex items-center">
         <Input
           type="text"
@@ -263,7 +287,7 @@ export default function CollectPage() {
                 <div className="flex justify-end">
                   {task.status === 'pending' && (
                     <Button onClick={() => handleStatusChange(task.id, 'in_progress')} variant="outline" size="sm">
-                      Start Collection
+                      Start picking up
                     </Button>
                   )}
                   {task.status === 'in_progress' && task.collectorId === user?.id && (
